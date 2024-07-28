@@ -55,19 +55,25 @@ def criar_prompt(dados_usuario):
 
     if metodologia == "Engenharia":
         prompt_template = """
-        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:
+        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n
 
-        #Propósito de Trabalho : Nesta seção, explicarei a razão de ser do projeto, isto é, qual problema ou desafio específico pretendo abordar. Além disso, ressaltarei os benefícios desta iniciativa e as suas possíveis contribuições.
+        1.Propósito de Trabalho:\n
+        Nesta seção, explicarei a razão de ser do projeto, isto é, qual problema ou desafio específico pretendo abordar. Além disso, ressaltarei os benefícios desta iniciativa e as suas possíveis contribuições.\n
 
-        #Características Físicas e Funcionais : Detalharei as características físicas e funcionais do projeto, explicando como ele será construído e como suas partes interagem para solucionar o problema proposto.
+        2.Características Físicas e Funcionais:\n
+        Detalharei as características físicas e funcionais do projeto, explicando como ele será construído e como suas partes interagem para solucionar o problema proposto.\n
 
-        #Restrições/Limitações : Abordarei quaisquer restrições ou limitações que possam afetar o desenvolvimento ou a implementação do projeto. Isso pode incluir restrições orçamentárias, de tempo, de recursos, entre outras.
+        3.Restrições/Limitações:\n
+        Abordarei quaisquer restrições ou limitações que possam afetar o desenvolvimento ou a implementação do projeto. Isso pode incluir restrições orçamentárias, de tempo, de recursos, entre outras.\n
 
-        #Avaliação : Explicarei os critérios de avaliação que serão usados para medir o sucesso do projeto. Isso pode envolver testes, análises comparativas, pesquisas de satisfação, entre outros métodos de avaliação.
+       4.Avaliação:\n
+       Explicarei os critérios de avaliação que serão usados para medir o sucesso do projeto. Isso pode envolver testes, análises comparativas, pesquisas de satisfação, entre outros métodos de avaliação.\n
 
-        #Cronograma : Criarei um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.
+        5.Cronograma:\n
+        Criarei um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.\n
 
-        #Bibliografia : Incluirei uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.
+        6.Bibliografia:\n
+        Incluirei uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.\n
         """
     elif metodologia == "Científica":
         prompt_template = """
