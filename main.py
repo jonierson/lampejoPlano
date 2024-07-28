@@ -1,11 +1,16 @@
 import os
 import streamlit as st
 from groq import Groq
+from dotenv import load_dotenv
+
+
+# Carregar variáveis do arquivo .env
+load_dotenv()
 
 # Função para obter as respostas do Groq
 def get_groq_completions(user_content):
     client = Groq(
-        api_key="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",
+        api_key=os.getenv('API_KEY')
     )
 
     completion = client.chat.completions.create(
@@ -13,7 +18,7 @@ def get_groq_completions(user_content):
         messages=[
             {
                 "role": "system",
-                "content": "You are a YouTube expert creator who likes to write engaging titles for a keyword. \nYou will provide 10 attention-grabbing YouTube titles on keywords specified by the user."
+                "content": user_content + "\nPor favor, responda em português do Brasil."
             },
             {
                 "role": "user",
@@ -33,7 +38,7 @@ def get_groq_completions(user_content):
 
     return result
 
-# Função para gerar ideias de projetos de feira de ciências
+# Função para gerar plano de trabalho de projetos de feira de ciências
 def gerar_ideias(dados_usuario):
     prompt = criar_prompt(dados_usuario)
 
@@ -41,7 +46,7 @@ def gerar_ideias(dados_usuario):
         response = get_groq_completions(prompt)
         return response.strip() if response else None
     except Exception as e:
-        st.error(f"Erro ao tentar gerar ideias: {e}")
+        st.error(f"Erro ao tentar gerar plano de trabalho: {e}")
         return None
 
 # Função para criar o prompt com base nos dados do usuário
@@ -100,22 +105,19 @@ def criar_prompt(dados_usuario):
     )
 
 # Configuração da aplicação Streamlit
-st.title("Tenha ideias incríveis de projetos com o Faísca, seu assistente virtual!")
+st.title("Tenha ideias incríveis de projetos com o Lampejo, seu assistente virtual!")
 
 # Centralizando a imagem usando colunas
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
     st.write("")
 
 with col2:
-    st.image("C:/Users/IFmaker02/PycharmProjects/streamilt/faisca.png", use_column_width=True)
-
-with col3:
     st.write("")
 
 st.write("""
-Faísca é um chatbot de inteligência artificial feito sob medida para alunos da educação básica como você. Ele não é apenas um assistente; é uma fonte de inspiração que irá acender sua criatividade e ajudá-lo a gerar ideias para seus projetos.
+Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho para projetos de pesquisa!
 """)
 
 st.write("""
