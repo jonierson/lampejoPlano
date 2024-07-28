@@ -117,7 +117,7 @@ with col2:
     st.write("")
 
 st.write("""
-Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho para projetos de pesquisa!
+Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho para seus projetos de pesquisa!
 """)
 
 st.write("""
@@ -140,11 +140,11 @@ dados_usuario = {
 }
 
 # Gerar ideias de projetos
-if st.button("Gerar Ideias de Projetos"):
+if st.button("Gerar Plano de Trabalho"):
     if not titulo or not objetivo or not materiais or not metodologia:
         st.error("Por favor, preencha todos os campos.")
     else:
-        st.write("Aqui estão algumas ideias de projetos para você:")
+        st.write("Aqui está um Plano de Trabalho para você:")
         response = gerar_ideias(dados_usuario)
         if response:
             st.write(response)
