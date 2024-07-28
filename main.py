@@ -55,8 +55,8 @@ def criar_prompt(dados_usuario):
 
     if metodologia == "Engenharia":
         prompt_template = """
-        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n
-
+        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n     
+     
         1.Propósito de Trabalho:\n
         Nesta seção, explicarei a razão de ser do projeto, isto é, qual problema ou desafio específico pretendo abordar. Além disso, ressaltarei os benefícios desta iniciativa e as suas possíveis contribuições.\n
 
@@ -66,8 +66,8 @@ def criar_prompt(dados_usuario):
         3.Restrições/Limitações:\n
         Abordarei quaisquer restrições ou limitações que possam afetar o desenvolvimento ou a implementação do projeto. Isso pode incluir restrições orçamentárias, de tempo, de recursos, entre outras.\n
 
-       4.Avaliação:\n
-       Explicarei os critérios de avaliação que serão usados para medir o sucesso do projeto. Isso pode envolver testes, análises comparativas, pesquisas de satisfação, entre outros métodos de avaliação.\n
+        4.Avaliação:\n
+        Explicarei os critérios de avaliação que serão usados para medir o sucesso do projeto. Isso pode envolver testes, análises comparativas, pesquisas de satisfação, entre outros métodos de avaliação.\n
 
         5.Cronograma:\n
         Criarei um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.\n
@@ -77,31 +77,28 @@ def criar_prompt(dados_usuario):
         """
     elif metodologia == "Científica":
         prompt_template = """
-        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:
+        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n
+       
+        1.Propósito de trabalho:\n
+        Explique o objetivo principal do projeto, ou seja, qual a pergunta ou problema que pretendo investigar. É importante destacar o significado e o impacto do projeto, bem como o que espero alcançar ao final da pesquisa.\n
 
-        #1) Título
-        Escolha um título que reflita claramente o escopo do projeto.
+        2.Hipótese:\n
+        Apresente uma suposição inicial sobre os resultados da pesquisa. A hipótese é uma afirmativa que procura responder o problema de pesquisa com base em conhecimentos prévios e pesquisas sobre o assunto.\n
 
-        #2) Propósito de trabalho
-        Explique o objetivo principal do projeto, ou seja, qual a pergunta ou problema que pretendo investigar. É importante destacar o significado e o impacto do projeto, bem como o que espero alcançar ao final da pesquisa.
+        3.Método:\n 
+        Descreva o método que pretende utilizar para conduzir a pesquisa. Isso inclui os procedimentos que serão seguidos e como os dados serão coletados.\n
 
-        #3) Hipótese
-        Apresente uma suposição inicial sobre os resultados da pesquisa. A hipótese é uma afirmativa que procura responder o problema de pesquisa com base em conhecimentos prévios e pesquisas sobre o assunto.
+        4.Materiais:\n
+        Liste todos os materiais e equipamentos necessários para realizar o projeto. É importante ser específico e detalhado para que outros possam reproduzir o experimento, se necessário.\n
 
-        #4) Método 
-        Descreva o método que pretende utilizar para conduzir a pesquisa. Isso inclui os procedimentos que serão seguidos e como os dados serão coletados.
+        5.Análise de dados:\n
+        Explique como os dados coletados serão analisados. Isso pode envolver o uso de gráficos, estatísticas ou outras ferramentas relevantes para interpretar os resultados.\n
 
-        #5) Materiais
-        Liste todos os materiais e equipamentos necessários para realizar o projeto. É importante ser específico e detalhado para que outros possam reproduzir o experimento, se necessário.
+        6.Cronograma:\n
+        Crie um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.\n
 
-        #6) Análise de dados
-        Explique como os dados coletados serão analisados. Isso pode envolver o uso de gráficos, estatísticas ou outras ferramentas relevantes para interpretar os resultados.
-
-        #7) Cronograma
-        Crie um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.
-
-        #8) Bibliografia
-        Inclua uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.
+        7.Bibliografia:\n
+        Inclua uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.\n
         """
 
     return prompt_template.format(
