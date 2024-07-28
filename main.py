@@ -105,7 +105,7 @@ def criar_prompt(dados_usuario):
     )
 
 # Configuração da aplicação Streamlit
-st.title("Tenha ideias incríveis de projetos com o Lampejo, seu assistente virtual!")
+st.title("Crie planos de trabalho incríveis com o Lampejo, seu assistente virtual!")
 
 # Centralizando a imagem usando colunas
 col1, col2 = st.columns(2)
@@ -121,7 +121,7 @@ Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criaç�
 """)
 
 st.write("""
-Para que o Faísca possa te oferecer as melhores sugestões, é fundamental que você responda a todas as perguntas.
+Para que o Lampejo possa te oferecer as melhores sugestões, é fundamental que você responda a todas as perguntas.
 """)
 
 # Coletando informações do usuário
