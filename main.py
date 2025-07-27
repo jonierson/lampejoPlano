@@ -14,7 +14,7 @@ def get_groq_completions(user_content):
     )
 
     completion = client.chat.completions.create(
-        model="mixtral-8x7b-32768",
+        model="qwen/qwen3-32b",
         messages=[
             {
                 "role": "system",
