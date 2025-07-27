@@ -3,30 +3,32 @@ import streamlit as st
 from groq import Groq
 from dotenv import load_dotenv
 
-
 # Carregar variáveis do arquivo .env
 load_dotenv()
+api_key = os.getenv('API_KEY')
 
-# Função para obter as respostas do Groq
+if not api_key:
+    st.error("⚠️ API_KEY não carregada. Verifique o arquivo .env.")
+    st.stop()
+
+# --- 1. FUNÇÃO DA API OTIMIZADA ---
+# A mensagem de sistema é mais clara e o modelo sugerido é ótimo para formatação.
 def get_groq_completions(user_content):
-    client = Groq(
-        api_key=os.getenv('API_KEY')
-    )
-
+    client = Groq(api_key=api_key)
     completion = client.chat.completions.create(
         model="qwen/qwen3-32b",
         messages=[
             {
                 "role": "system",
-                "content": user_content + "\nPor favor, responda em português do Brasil."
+                "content": "Você é um assistente especialista em criar planos de trabalho detalhados para projetos de feira de ciências. Responda sempre em português do Brasil e siga estritamente as instruções de formatação do usuário."
             },
             {
                 "role": "user",
                 "content": user_content
             }
         ],
-        temperature=0.5,
-        max_tokens=5640,
+        temperature=0.7,
+        max_tokens=8000,
         top_p=1,
         stream=True,
         stop=None,
@@ -38,10 +40,9 @@ def get_groq_completions(user_content):
 
     return result
 
-# Função para gerar plano de trabalho de projetos de feira de ciências
-def gerar_ideias(dados_usuario):
+# Função renomeada para maior clareza
+def gerar_plano_de_trabalho(dados_usuario):
     prompt = criar_prompt(dados_usuario)
-
     try:
         response = get_groq_completions(prompt)
         return response.strip() if response else None
@@ -49,57 +50,72 @@ def gerar_ideias(dados_usuario):
         st.error(f"Erro ao tentar gerar plano de trabalho: {e}")
         return None
 
-# Função para criar o prompt com base nos dados do usuário
+# --- 2. PROMPTS COMPLETAMENTE REFORMULADOS ---
+# Usam Markdown, quebras de linha e instruções explícitas para garantir a formatação correta.
 def criar_prompt(dados_usuario):
     metodologia = dados_usuario.get('metodologia')
 
+    # Template base com instruções de formatação
+    instrucao_formato = """
+    Crie um plano de trabalho detalhado para um projeto de feira de ciência com o título "{titulo}", cujo objetivo é "{objetivo}" e que utilizará os seguintes materiais: "{materiais}".
+
+    A resposta DEVE começar diretamente com o primeiro item do plano ("Propósito de Trabalho"), sem qualquer introdução ou preâmbulo.
+    Use estritamente o seguinte formato de Markdown. É CRUCIAL que cada seção comece em uma NOVA LINHA.
+    """
+
+    # Seções específicas para cada metodologia
     if metodologia == "Engenharia":
-        prompt_template = """
-        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n     
-     
-        1.Propósito de Trabalho:\n
-        Nesta seção, explicarei a razão de ser do projeto, isto é, qual problema ou desafio específico pretendo abordar. Além disso, ressaltarei os benefícios desta iniciativa e as suas possíveis contribuições.\n
+        prompt_template = instrucao_formato + """
+        **Propósito de Trabalho:**
+        [Nesta seção, explique a razão de ser do projeto, qual problema ou desafio específico pretende abordar, ressaltando os benefícios e contribuições.]
 
-        2.Características Físicas e Funcionais:\n
-        Detalharei as características físicas e funcionais do projeto, explicando como ele será construído e como suas partes interagem para solucionar o problema proposto.\n
+        **Características Físicas e Funcionais:**
+        [Detalhe as características do protótipo, explicando como será construído e como suas partes interagem para solucionar o problema proposto.]
 
-        3.Restrições/Limitações:\n
-        Abordarei quaisquer restrições ou limitações que possam afetar o desenvolvimento ou a implementação do projeto. Isso pode incluir restrições orçamentárias, de tempo, de recursos, entre outras.\n
+        **Restrições/Limitações:**
+        [Aborde quaisquer restrições ou limitações que possam afetar o projeto (orçamento, tempo, recursos, tecnologia, etc.).]
 
-        4.Avaliação:\n
-        Explicarei os critérios de avaliação que serão usados para medir o sucesso do projeto. Isso pode envolver testes, análises comparativas, pesquisas de satisfação, entre outros métodos de avaliação.\n
+        **Avaliação:**
+        [Explique os critérios e testes que serão usados para medir o sucesso do projeto (testes de funcionalidade, análises comparativas, etc.).]
 
-        5.Cronograma:\n
-        Criarei um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.\n
+        **Cronograma (4 meses):**
+        *   **Mês 1:** [Descreva as tarefas principais do primeiro mês]
+        *   **Mês 2:** [Descreva as tarefas principais do segundo mês]
+        *   **Mês 3:** [Descreva as tarefas principais do terceiro mês]
+        *   **Mês 4:** [Descreva as tarefas principais do quarto mês]
 
-        6.Bibliografia:\n
-        Incluirei uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.\n
+        **Bibliografia:**
+        *   [Referência 1]
+        *   [Referência 2]
+        *   [Referência 3]
         """
     elif metodologia == "Científica":
-        prompt_template = """
-        Crie um plano de trabalho para um projeto de pesquisa para uma feira de ciência que tem como título {titulo}. O objetivo do projeto é {objetivo}. Na execução do projeto será utilizado os seguintes materiais: {materiais}. A proposta que busco deve conter os seguintes elementos:\n
-       
-        1.Propósito de trabalho:\n
-        Explique o objetivo principal do projeto, ou seja, qual a pergunta ou problema que pretendo investigar. É importante destacar o significado e o impacto do projeto, bem como o que espero alcançar ao final da pesquisa.\n
+        prompt_template = instrucao_formato + """
+        **Propósito de Trabalho:**
+        [Explique o objetivo principal da investigação, a pergunta ou problema a ser investigado e o impacto esperado da pesquisa.]
 
-        2.Hipótese:\n
-        Apresente uma suposição inicial sobre os resultados da pesquisa. A hipótese é uma afirmativa que procura responder o problema de pesquisa com base em conhecimentos prévios e pesquisas sobre o assunto.\n
+        **Hipótese:**
+        [Apresente uma suposição clara e testável sobre os resultados esperados, baseada em conhecimentos prévios.]
 
-        3.Método:\n 
-        Descreva o método que pretende utilizar para conduzir a pesquisa. Isso inclui os procedimentos que serão seguidos e como os dados serão coletados.\n
+        **Método:**
+        [Descreva passo a passo os procedimentos que serão seguidos para testar a hipótese, incluindo como os dados serão coletados e controlados.]
 
-        4.Materiais:\n
-        Liste todos os materiais e equipamentos necessários para realizar o projeto. É importante ser específico e detalhado para que outros possam reproduzir o experimento, se necessário.\n
+        **Análise de Dados:**
+        [Explique como os dados coletados serão analisados para confirmar ou refutar a hipótese (uso de gráficos, estatísticas, etc.).]
 
-        5.Análise de dados:\n
-        Explique como os dados coletados serão analisados. Isso pode envolver o uso de gráficos, estatísticas ou outras ferramentas relevantes para interpretar os resultados.\n
+        **Cronograma (4 meses):**
+        *   **Mês 1:** [Descreva as tarefas principais do primeiro mês]
+        *   **Mês 2:** [Descreva as tarefas principais do segundo mês]
+        *   **Mês 3:** [Descreva as tarefas principais do terceiro mês]
+        *   **Mês 4:** [Descreva as tarefas principais do quarto mês]
 
-        6.Cronograma:\n
-        Crie um cronograma detalhado em 4 meses, dividindo o projeto em etapas mensais, para garantir um desenvolvimento organizado e dentro do prazo estabelecido.\n
-
-        7.Bibliografia:\n
-        Inclua uma lista de pelo menos três (3) fontes utilizadas para embasar o projeto. Isso engloba livros, artigos científicos, sites e outras referências relevantes que inspiram para sua concepção.\n
+        **Bibliografia:**
+        *   [Referência 1]
+        *   [Referência 2]
+        *   [Referência 3]
         """
+    else:
+        return None # Caso nenhuma metodologia seja escolhida
 
     return prompt_template.format(
         titulo=dados_usuario['titulo'],
@@ -107,34 +123,29 @@ def criar_prompt(dados_usuario):
         materiais=dados_usuario['materiais']
     )
 
-# Configuração da aplicação Streamlit
-st.title("Crie planos de trabalho incríveis com o Lampejo, seu assistente virtual!")
+# --- 3. INTERFACE DO STREAMLIT MELHORADA ---
+st.set_page_config(page_title="Lampejo - Plano de Trabalho", page_icon="💡", layout="centered")
 
-# Centralizando a imagem usando colunas
-col1, col2 = st.columns(2)
+st.title("Crie planos de trabalho incríveis com o Lampejo!")
+st.subheader("Seu assistente virtual para projetos de pesquisa")
 
-with col1:
-    st.write("")
-
+# --- IMAGEM ADICIONADA E CENTRALIZADA ---
+col1, col2, col3 = st.columns([0.2, 1, 0.2])
 with col2:
-    st.write("")
+    st.image("lampejo.png") # Certifique-se que o nome do arquivo está correto
 
 st.write("""
-Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho para seus projetos de pesquisa!
+Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho estruturados para seus projetos!
 """)
 
-st.write("""
-Para que o Lampejo possa te oferecer as melhores sugestões, é fundamental que você responda a todas as perguntas.
-""")
+st.info("Para que o Lampejo possa te oferecer o melhor plano, é fundamental que você preencha todas as informações abaixo.")
 
 # Coletando informações do usuário
 titulo = st.text_input("Qual é o título do seu projeto?", key="titulo")
 objetivo = st.text_area("Qual é o objetivo do seu projeto?", key="objetivo")
-materiais = st.text_area("Quais materiais você vai utilizar?", key="materiais")
+materiais = st.text_area("Quais são os principais materiais que você vai utilizar?", key="materiais")
+metodologia = st.selectbox("Qual metodologia seu projeto seguirá?", ["", "Científica", "Engenharia"], key="metodologia")
 
-metodologia = st.selectbox("Qual metodologia você pretende utilizar para o seu projeto?", ["", "Científica", "Engenharia"], key="metodologia")
-
-# Dados do usuário para o prompt
 dados_usuario = {
     'titulo': titulo,
     'objetivo': objetivo,
@@ -142,13 +153,17 @@ dados_usuario = {
     'metodologia': metodologia
 }
 
-# Gerar ideias de projetos
-if st.button("Gerar Plano de Trabalho"):
-    if not titulo or not objetivo or not materiais or not metodologia:
-        st.error("Por favor, preencha todos os campos.")
+# --- BOTÃO E EXIBIÇÃO DA RESPOSTA APRIMORADOS ---
+if st.button("Gerar Plano de Trabalho", type="primary"):
+    if not all([titulo, objetivo, materiais, metodologia]):
+        st.error("Por favor, preencha todos os campos para continuar.")
     else:
-        st.write("Aqui está um Plano de Trabalho para você:")
-        response = gerar_ideias(dados_usuario)
+        with st.spinner("Lampejo está organizando as ideias e montando seu plano... aguarde! 💡"):
+            response = gerar_plano_de_trabalho(dados_usuario)
+        
+        st.success("Pronto! Aqui está a sugestão de Plano de Trabalho:")
         if response:
-            st.write(response)
-
+            # st.markdown renderiza o texto formatado (negrito, listas, etc.)
+            st.markdown(response)
+        else:
+            st.warning("Não foi possível gerar o plano. Tente refinar suas respostas ou tente novamente.")
