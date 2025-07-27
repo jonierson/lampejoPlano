@@ -11,8 +11,6 @@ if not api_key:
     st.error("⚠️ API_KEY não carregada. Verifique o arquivo .env.")
     st.stop()
 
-# --- 1. FUNÇÃO DA API OTIMIZADA ---
-# A mensagem de sistema é mais clara e o modelo sugerido é ótimo para formatação.
 def get_groq_completions(user_content):
     client = Groq(api_key=api_key)
     completion = client.chat.completions.create(
@@ -40,30 +38,42 @@ def get_groq_completions(user_content):
 
     return result
 
-# Função renomeada para maior clareza
+# FUNÇÃO COM LÓGICA DE LIMPEZA DO PREÂMBULO
 def gerar_plano_de_trabalho(dados_usuario):
     prompt = criar_prompt(dados_usuario)
     try:
         response = get_groq_completions(prompt)
-        return response.strip() if response else None
+        if not response:
+            return None
+
+        # Define o marcador que indica o início real do conteúdo.
+        start_marker = "**Propósito de Trabalho:**"
+        
+        # Encontra a posição do marcador.
+        start_index = response.find(start_marker)
+
+        # Se o marcador for encontrado, retorna a string a partir dele.
+        if start_index != -1:
+            return response[start_index:].strip()
+        else:
+            return response.strip()
+
     except Exception as e:
         st.error(f"Erro ao tentar gerar plano de trabalho: {e}")
         return None
 
-# --- 2. PROMPTS COMPLETAMENTE REFORMULADOS ---
-# Usam Markdown, quebras de linha e instruções explícitas para garantir a formatação correta.
+# PROMPT REFINADO PARA ELIMINAR O PREÂMBULO
 def criar_prompt(dados_usuario):
     metodologia = dados_usuario.get('metodologia')
 
-    # Template base com instruções de formatação
     instrucao_formato = """
     Crie um plano de trabalho detalhado para um projeto de feira de ciência com o título "{titulo}", cujo objetivo é "{objetivo}" e que utilizará os seguintes materiais: "{materiais}".
 
-    A resposta DEVE começar diretamente com o primeiro item do plano ("Propósito de Trabalho"), sem qualquer introdução ou preâmbulo.
-    Use estritamente o seguinte formato de Markdown. É CRUCIAL que cada seção comece em uma NOVA LINHA.
+    Sua resposta DEVE começar EXATAMENTE com a linha "**Propósito de Trabalho:**". 
+    NÃO inclua nenhuma introdução, preâmbulo, explicação ou texto de raciocínio antes do plano de trabalho.
+    Siga estritamente o formato Markdown abaixo, com cada seção começando em uma nova linha.
     """
 
-    # Seções específicas para cada metodologia
     if metodologia == "Engenharia":
         prompt_template = instrucao_formato + """
         **Propósito de Trabalho:**
@@ -115,7 +125,7 @@ def criar_prompt(dados_usuario):
         *   [Referência 3]
         """
     else:
-        return None # Caso nenhuma metodologia seja escolhida
+        return None
 
     return prompt_template.format(
         titulo=dados_usuario['titulo'],
@@ -123,16 +133,15 @@ def criar_prompt(dados_usuario):
         materiais=dados_usuario['materiais']
     )
 
-# --- 3. INTERFACE DO STREAMLIT MELHORADA ---
+# INTERFACE DO STREAMLIT
 st.set_page_config(page_title="Lampejo - Plano de Trabalho", page_icon="💡", layout="centered")
 
 st.title("Crie planos de trabalho incríveis com o Lampejo!")
 st.subheader("Seu assistente virtual para projetos de pesquisa")
 
-# --- IMAGEM ADICIONADA E CENTRALIZADA ---
 col1, col2, col3 = st.columns([0.2, 1, 0.2])
 with col2:
-    st.image("lampejo.png") # Certifique-se que o nome do arquivo está correto
+    st.image("lampejo.png")
 
 st.write("""
 Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criação de Planos de Trabalho estruturados para seus projetos!
@@ -140,7 +149,6 @@ Com o Lampejo, você tem um assistente inteligente pronto para ajudar na criaç�
 
 st.info("Para que o Lampejo possa te oferecer o melhor plano, é fundamental que você preencha todas as informações abaixo.")
 
-# Coletando informações do usuário
 titulo = st.text_input("Qual é o título do seu projeto?", key="titulo")
 objetivo = st.text_area("Qual é o objetivo do seu projeto?", key="objetivo")
 materiais = st.text_area("Quais são os principais materiais que você vai utilizar?", key="materiais")
@@ -153,7 +161,6 @@ dados_usuario = {
     'metodologia': metodologia
 }
 
-# --- BOTÃO E EXIBIÇÃO DA RESPOSTA APRIMORADOS ---
 if st.button("Gerar Plano de Trabalho", type="primary"):
     if not all([titulo, objetivo, materiais, metodologia]):
         st.error("Por favor, preencha todos os campos para continuar.")
@@ -163,7 +170,6 @@ if st.button("Gerar Plano de Trabalho", type="primary"):
         
         st.success("Pronto! Aqui está a sugestão de Plano de Trabalho:")
         if response:
-            # st.markdown renderiza o texto formatado (negrito, listas, etc.)
             st.markdown(response)
         else:
             st.warning("Não foi possível gerar o plano. Tente refinar suas respostas ou tente novamente.")
