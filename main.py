@@ -38,7 +38,7 @@ def get_groq_completions(user_content):
 
     return result
 
-# FUNÇÃO COM LÓGICA DE LIMPEZA DO PREÂMBULO
+# FUNÇÃO COM LÓGICA DE LIMPEZA CORRIGIDA
 def gerar_plano_de_trabalho(dados_usuario):
     prompt = criar_prompt(dados_usuario)
     try:
@@ -46,16 +46,18 @@ def gerar_plano_de_trabalho(dados_usuario):
         if not response:
             return None
 
-        # Define o marcador que indica o início real do conteúdo.
+        # Marcador que indica o início de cada seção principal.
         start_marker = "**Propósito de Trabalho:**"
         
-        # Encontra a posição do marcador.
-        start_index = response.find(start_marker)
+        # Usa rfind() para encontrar a ÚLTIMA ocorrência do marcador.
+        # Isso garante que pegamos a resposta final e não o preâmbulo/raciocínio do modelo.
+        last_marker_pos = response.rfind(start_marker)
 
-        # Se o marcador for encontrado, retorna a string a partir dele.
-        if start_index != -1:
-            return response[start_index:].strip()
+        # Se o marcador for encontrado, retorna a string a partir da sua última posição.
+        if last_marker_pos != -1:
+            return response[last_marker_pos:].strip()
         else:
+            # Caso o marcador não seja encontrado, retorna a resposta limpa como fallback.
             return response.strip()
 
     except Exception as e:
