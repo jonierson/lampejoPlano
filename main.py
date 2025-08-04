@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 # Carregar variáveis do arquivo .env
 load_dotenv()
-api_key = os.getenv('API_KEY')
+api_key = "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"
 
 if not api_key:
     st.error("⚠️ API_KEY não carregada. Verifique o arquivo .env.")
