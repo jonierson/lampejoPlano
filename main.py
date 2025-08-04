@@ -3,7 +3,7 @@ import streamlit as st
 from groq import Groq
 
 # Tenta carregar a API_KEY a partir do secrets
-api_key='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'
+api_key='xxxxxxx'
 
 if not api_key:
     st.error("⚠️ API_KEY não carregada. Verifique se ela está configurada no secrets do Streamlit Cloud.")
