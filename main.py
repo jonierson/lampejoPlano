@@ -1,14 +1,12 @@
 import os
 import streamlit as st
 from groq import Groq
-from dotenv import load_dotenv
 
-# Carregar variáveis do arquivo .env
-load_dotenv()
+# Tenta carregar a API_KEY a partir do secrets
 api_key = "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"
 
 if not api_key:
-    st.error("⚠️ API_KEY não carregada. Verifique o arquivo .env.")
+    st.error("⚠️ API_KEY não carregada. Verifique se ela está configurada no secrets do Streamlit Cloud.")
     st.stop()
 
 def get_groq_completions(user_content):
